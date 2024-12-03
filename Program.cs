@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,7 +11,6 @@ using Microsoft.VisualBasic;
 using System.IO;
 using Newtonsoft.Json;
 using System.IO.Compression;
-//using Avalonia;
 
 
 namespace MoscowCitySilicon
@@ -99,47 +99,48 @@ namespace MoscowCitySilicon
                         case 1:
                             Book(path, luxury, standart, economy, guests, rooms);
                             break;
-                        case 2:
-                        case 3: 
+                        case 2: 
                             CheckFreeRooms(room_path, rooms);
                             break;
-                        case 4:
+                        case 3:
                             RoomInfo();
                             break;
-                        case 5:
+                        case 4:
                             FoodMenu();
                             break;
-                        case -1: 
+                        case 5: 
                             return;
+                        default:
+                            Console.WriteLine("Неверный ввод");
+                            break;
                     }
 
                     Console.Clear();
-                    Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
-                    Console.ReadKey(true);
                 }
             } while (true);
         }
 
         public static void ShowInfo(string path, List<List<string>> guests)
         {
+            Console.Clear();
             try
                 {
                 string jsonFromFile = File.ReadAllText(path);
                 List<List<string>> getGuests = JsonConvert.DeserializeObject<List<List<string>>>(jsonFromFile);
                 
-                var getLuxury = guests.Where(list => list.Count > 2 && list[2] == "Luxury").ToList();
-                var getStandart = guests.Where(list => list.Count > 2 && list[2] == "Standart").ToList();
-                var getEconomy = guests.Where(list => list.Count > 2 && list[2] == "Economy").ToList();
-                var youngThan30 = guests.Where(list => list.Count > 1 && Convert.ToInt32(list[1]) < 30).ToList();
-                var olderThan30 = guests.Where(list => list.Count > 1 && Convert.ToInt32(list[1]) > 30).ToList();
+                var getLuxury = guests.Where(list => list[2] == "Luxury").ToList();
+                var getStandart = guests.Where(list => list[2] == "Standart").ToList();
+                var getEconomy = guests.Where(list => list[2] == "Economy").ToList();
+                var youngerThan30 = guests.Where(list => Convert.ToInt32(list[1]) < 30).ToList();
+                var olderThan30 = guests.Where(list =>  Convert.ToInt32(list[1]) > 30).ToList();
 
                 Console.WriteLine("Выберите действие:");
                 Console.WriteLine("1. Вывести всех гостей");
                 Console.WriteLine("2. Вывести гостей с номером класса 'Luxury'");
                 Console.WriteLine("3. Вывести гостей с номером класса 'Standart'");
                 Console.WriteLine("4. Вывести гостей с номером класса 'Economy'");
-                Console.WriteLine("5. Вывести гостей старше 30 лет");
-                Console.WriteLine("6. Вывести гостей младше 30 лет\n");
+                Console.WriteLine("5. Вывести гостей младше 30 лет");
+                Console.WriteLine("6. Вывести гостей старше 30 лет\n");
                 Console.WriteLine("0. Назад");
 
                 int choice = 0;
@@ -185,7 +186,7 @@ namespace MoscowCitySilicon
                         break; 
                     case 5:
                         Console.WriteLine("Гости младше 30 лет:");
-                        foreach (var guest in youngThan30)
+                        foreach (var guest in youngerThan30)
                         {
                             Console.WriteLine(string.Join(", ", guest));
                         }
@@ -203,7 +204,7 @@ namespace MoscowCitySilicon
                         Console.WriteLine("Неверный выбор");
                         break;
                 }
-                Console.WriteLine("Нажмите любую клавишу, чтобы продолжить");
+                Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
                 Console.ReadKey();
                 
                 Console.WriteLine("\n\n");
@@ -228,7 +229,7 @@ namespace MoscowCitySilicon
         public static void Book(string path, int luxury, int standart, int economy, 
                                 List<List<string>> guests, List<int> rooms)
         {       
-            if (luxury > 0 && standart > 0 && economy > 0)
+            if (luxury > 0 || standart > 0 || economy > 0)
             {
                 Console.WriteLine("Введите имя");
                 string name = Console.ReadLine();
@@ -321,12 +322,15 @@ namespace MoscowCitySilicon
                         break;
                 }
 
-                string json = JsonConvert.SerializeObject(guests, Formatting.Indented);         
+                string json = JsonConvert.SerializeObject(guests, Formatting.Indented);    
+                string json2 = JsonConvert.SerializeObject(rooms, Formatting.Indented);
                 File.WriteAllText(path, json);
-            }else
-                {
-                    Console.WriteLine("Свободных номеров нет");
-                }
+                File.WriteAllText("rooms.json", json2);
+            } else {Console.WriteLine("Свободных номеров нет");}
+
+            Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+            Console.ReadKey();
+
         }
 
         public static void CheckFreeRooms(string room_path, List<int> rooms)
@@ -336,6 +340,9 @@ namespace MoscowCitySilicon
             Console.WriteLine($"Свободных номеров с классом 'Luxury': {rooms[0]}");
             Console.WriteLine($"Свободных номеров с классом 'Standart': {rooms[1]}");
             Console.WriteLine($"Свободных номеров с классом 'Economy': {rooms[2]}");
+
+            Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+            Console.ReadKey();
         }
         public static void RoomInfo()
         {
@@ -353,6 +360,9 @@ namespace MoscowCitySilicon
             Console.WriteLine("Номер 'Economy' включает в себя: \n" +
                 "1. Завтрак\n" +
                 "2. Номер с просторной спальной комнатой\n\n");
+
+            Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+            Console.ReadKey();
                 
         }
         
@@ -363,6 +373,9 @@ namespace MoscowCitySilicon
                 "3.Фуа-гра на тостах - утренний деликатес, подается с джемом из инжира.\n" +
                 "4.Лобстер с чесночным маслом - запеченные лобстеры, подаются с ароматным чесночным маслом.\n" +
                 "5.Царская рыба с трюфелями - свежая рыба макси-класса, запеченная\n\n");
+            
+            Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+            Console.ReadKey();
         }
     }
 }
