@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -13,7 +12,7 @@ using Newtonsoft.Json;
 using System.IO.Compression;
 
 
-namespace MoscowCitySilicon
+namespace Hotel
 {    
     internal class Program
     {
